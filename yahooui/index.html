@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Journey Planner</title>
+        <meta http-equiv="Content-Type" container="text/html charset=utf8">
+        <script src="http://yui.yahooapis.com/3.10.0/build/yui/yui-min.js"></script>
+        <style type="text/css">
+        	#mygraphiccontainer {
+        		width: 600px;
+        		height: 400px;
+        	}
+
+        </style>
+    </head>
+    <body>
+   	<div id="canvas">
+   		<h1>Travel Planner</h1>
+   		<h4>Pick your destination</h4>
+   		<table>
+   			<tr>
+   				<td>Continent</td>
+   				<td>
+   					<select id="continents">
+   						
+   					</select>
+   				</td>
+   			</tr>
+   			<tr>
+   				<td>Country</td>
+   				<td>
+   					<select id="countries">
+   						
+   					</select>
+   				</td>
+   			</tr>
+   			<tr>
+   				<td>States</td>
+   				<td>
+   					<select id="states">
+   						
+   					</select>
+   				</td>
+   			</tr>
+   			<tr>
+   				<td>District</td>
+   				<td>
+   					<select id="districts">
+   						
+   					</select>
+   				</td>
+   			</tr>	
+   		<table>
+   	</div> 	
+	<script type="text/javascript">
+		YUI().use('yql', 'node', 'event', function(Y){
+
+			// Selectors
+			var continents = Y.one('#continents');
+			var countries = Y.one('#countries');
+			var states = Y.one('#states');
+			var districts = Y.one('#districts');
+
+			// prefill continents
+			Y.YQL('select * from geo.continents', function(r){
+				// cp1
+				Y.Array.each(r.query.results.place, function(element, index){
+					if(index == 0){ var selected = 'selected'}
+					continents.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+				});
+			});
+
+			// fetch countries
+			var fetchCountries = function(e) {
+			    Y.YQL('select * from geo.countries where place = "' + e.target.get('value') + '"', function(r){
+			    	// cp1
+			    	Y.Array.each(r.query.results.place, function(element, index){
+						if(index == 0){ var selected = 'selected'}
+						countries.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+					});
+			    });
+			};
+
+			// fetch states
+			var fetchStates = function(e) {
+			    Y.YQL('select * from geo.states where place = "' + e.target.get('value') + '"', function(r){
+			    	// cp1
+			    	Y.Array.each(r.query.results.place, function(element, index){
+						if(index == 0){ var selected = 'selected'}
+						states.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+					});
+			    });
+			};
+
+			// districts
+			var fetchDistricts = function(e) {
+			    Y.YQL('select * from geo.counties where place = "' + e.target.get('value') + '"', function(r){
+			    	// cp1
+			    	Y.Array.each(r.query.results.place, function(element, index){
+						if(index == 0){ var selected = 'selected'}
+						districts.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+					});
+			    });
+			};
+
+			// Deletgate events
+			Y.one("#continents").delegate('click', fetchCountries, 'option');
+			Y.one("#countries").delegate('click', fetchStates, 'option');
+			Y.one("#states").delegate('click', fetchDistricts, 'option');
+			
+		});
+	</script>        
+    </body>
+</html>

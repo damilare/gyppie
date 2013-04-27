@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import json
 import requests
 
@@ -24,6 +24,11 @@ def get_photos_by_woeid(woe_id):
             flickr_photos.append('http://farm9.staticflickr.com/{0}/{1}_{2}_z.jpg'.format(photo['server'], photo['id'], photo['secret']))
     
     return jsonify({'data': flickr_photos})
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run()

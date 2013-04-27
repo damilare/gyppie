@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Journey Planner</title>
+        <meta http-equiv="Content-Type" container="text/html charset=utf8">
+        <script src="http://yui.yahooapis.com/3.10.0/build/yui/yui-min.js"></script>
+        <style type="text/css">
+        	#mygraphiccontainer {
+        		width: 600px;
+        		height: 400px;
+        	}
+
+        </style>
+    </head>
+    <body>
+   	<div id="container">
+   		<div id="control">
+	   		<h1>Travel Planner</h1>
+	   		<h4>Pick your destination</h4>
+	   		<table>
+	   			<tr>
+	   				<td>Continent</td>
+	   				<td>
+	   					<select id="continents">
+	   						
+	   					</select>
+	   				</td>
+	   			</tr>
+	   			<tr>
+	   				<td>Country</td>
+	   				<td>
+	   					<select id="countries">
+	   						
+	   					</select>
+	   				</td>
+	   			</tr>
+	   			<tr>
+	   				<td>States</td>
+	   				<td>
+	   					<select id="states">
+	   						
+	   					</select>
+	   				</td>
+	   			</tr>
+	   			<tr>
+	   				<td>District</td>
+	   				<td>
+	   					<select id="districts">
+	   						
+	   					</select>
+	   				</td>
+	   			</tr>	
+	   		<table>
+	   	</div>
+	   	<div id="gallery">
+
+	   	</div>
+   	</div> 	
+	<script type="text/javascript">
+		YUI().use('yql', 'node', 'event', 'io-base', 'json-parse', function(Y){
+
+			// Selectors
+			var continents = Y.one('#continents');
+			var countries = Y.one('#countries');
+			var states = Y.one('#states');
+			var districts = Y.one('#districts');
+			
+			var gallery = Y.one('#gallery');
+
+			// prefill continents
+			Y.YQL('select * from geo.continents', function(r){
+				// cp1
+				Y.Array.each(r.query.results.place, function(element, index){
+					if(index == 0){ var selected = 'selected'}
+					continents.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+				});
+			});
+
+			// fetch countries
+			var fetchCountries = function(e) {
+			    Y.YQL('select * from geo.countries where place = "' + e.target.get('value') + '"', function(r){
+			    	// cp1
+			    	Y.Array.each(r.query.results.place, function(element, index){
+						if(index == 0){ var selected = 'selected'}
+						countries.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+					});
+			    });
+			};
+
+			// fetch states
+			var fetchStates = function(e) {
+			    Y.YQL('select * from geo.states where place = "' + e.target.get('value') + '"', function(r){
+			    	// cp1
+			    	Y.Array.each(r.query.results.place, function(element, index){
+						if(index == 0){ var selected = 'selected'}
+						states.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+					});
+			    });
+			};
+
+			// districts
+			var fetchDistricts = function(e) {
+			    Y.YQL('select * from geo.counties where place = "' + e.target.get('value') + '"', function(r){
+			    	// cp1
+			    	Y.Array.each(r.query.results.place, function(element, index){
+						if(index == 0){ var selected = 'selected'}
+						//console.log(element.woeid);
+						districts.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+					});
+			    });
+			};
+
+			// fetch flikr photos
+			var fetchPhotos =  function(e) {
+			    function complete(id, o, args){
+			    	photos = Y.JSON.parse(o.responseText);
+			    	console.log(photos);
+			    	Y.Array.each(photos.data,function(element, index){
+			    		gallery.appendChild("<img src=" + element + " />");
+			    	})
+			    };
+
+			    Y.on('io:complete', complete, Y, ['lorem', 'ipsum']);
+
+			    var uri = 'http://127.0.0.1:5000/photos/12602147'
+			    var request = Y.io(uri);
+
+			};
+
+			// Deletgate events
+			Y.one("#continents").delegate('click', fetchCountries, 'option');
+			Y.one("#countries").delegate('click', fetchStates, 'option');
+			Y.one("#states").delegate('click', fetchDistricts, 'option');
+			Y.one("#districts").delegate('click', fetchPhotos, 'option');
+			
+		});
+	</script>        
+    </body>
+</html>

@@ -71,7 +71,7 @@
 			Y.YQL('select * from geo.continents', function(r){
 				// cp1
 				Y.Array.each(r.query.results.place, function(element, index){
-					if(index == 0){ var selected = 'selected'}
+					selected = ''; if(index == 0){ var selected = 'selected'}
 					continents.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
 				});
 			});
@@ -80,8 +80,9 @@
 			var fetchCountries = function(e) {
 			    Y.YQL('select * from geo.countries where place = "' + e.target.get('value') + '"', function(r){
 			    	// cp1
+			    	countries.setHTML("")
 			    	Y.Array.each(r.query.results.place, function(element, index){
-						if(index == 0){ var selected = 'selected'}
+						selected = ''; if(index == 0){ var selected = 'selected'}
 						countries.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
 					});
 			    });
@@ -91,8 +92,9 @@
 			var fetchStates = function(e) {
 			    Y.YQL('select * from geo.states where place = "' + e.target.get('value') + '"', function(r){
 			    	// cp1
+			    	states.setHTML("")
 			    	Y.Array.each(r.query.results.place, function(element, index){
-						if(index == 0){ var selected = 'selected'}
+						selected = ''; if(index == 0){ var selected = 'selected'}
 						states.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
 					});
 			    });
@@ -102,10 +104,10 @@
 			var fetchDistricts = function(e) {
 			    Y.YQL('select * from geo.counties where place = "' + e.target.get('value') + '"', function(r){
 			    	// cp1
+			    	districts.setHTML("")
 			    	Y.Array.each(r.query.results.place, function(element, index){
 						if(index == 0){ var selected = 'selected'}
-						//console.log(element.woeid);
-						districts.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
+						districts.appendChild("<option " + selected +  " class='continent' value=" + element.woeid + ">" + element.name  +	"</	option>");	
 					});
 			    });
 			};
@@ -114,15 +116,14 @@
 			var fetchPhotos =  function(e) {
 			    function complete(id, o, args){
 			    	photos = Y.JSON.parse(o.responseText);
-			    	console.log(photos);
+			    	gallery.setHTML("<br />")
 			    	Y.Array.each(photos.data,function(element, index){
 			    		gallery.appendChild("<img src=" + element + " />");
 			    	})
 			    };
 
 			    Y.on('io:complete', complete, Y, ['lorem', 'ipsum']);
-
-			    var uri = 'http://127.0.0.1:5000/photos/12602147'
+			    var uri = 'http://127.0.0.1:5000/photos/' + e.target.get('value')
 			    var request = Y.io(uri);
 
 			};

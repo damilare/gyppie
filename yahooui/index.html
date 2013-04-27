@@ -97,6 +97,7 @@
 			    	// cp1
 			    	Y.Array.each(r.query.results.place, function(element, index){
 						if(index == 0){ var selected = 'selected'}
+						console.log(element.woeid);
 						districts.appendChild("<option " + selected +  " class='continent'>" + element.name  +	"</	option>");	
 					});
 			    });

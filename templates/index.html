@@ -4,38 +4,85 @@
         <title>Journey Planner</title>
         <meta http-equiv="Content-Type" container="text/html charset=utf8">
         <script src="http://yui.yahooapis.com/3.10.0/build/yui/yui-min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://masonry.desandro.com/jquery.masonry.min.js"></script>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://yui.yahooapis.com/3.9.0/build/cssgrids-responsive/cssgrids-responsive-min.css" rel="stylesheet">
         <style type="text/css">
-        	#mygraphiccontainer {
-        		width: 600px;
-        		height: 400px;
-        	}
+		    body {
+		        font-family: sans-serif;
+		        margin: 0;
+		    }
 
-        </style>
+		    #control {
+		    	background-color: #eec;
+		        float: left;
+		        font-size: 10px;
+		        position: fixed;
+		        padding-left: 15px; 
+		        padding-top: 12px;
+		        margin: 0;
+		    }
+
+		    #gallery {
+		        float: left;
+		    }
+
+		</style>
     </head>
     <body>
-   	<div id="container">
-   		<div id="control">
+   	<div class="container-fluid">
+	    <div id="control"  class="row-fluid">
+	    	Pick Continent
+	    	<select id="continents">
+   			</select>	
+   			Pick Country 
+   			<select id="countries">
+   			</select>
+   			Pick States
+   			<select id="states">
+   			</select>
+   			Pick Districts
+   			<select id="districts">
+   			</select>
+	    </div>
+	    <div class="row yui3-g-r yui3-u-1" style="overflow: auto; padding-top: 5em; margin-left: 4px;">
+	    	<div id="gallery" class="yui3-u-1-2">
+	    		&nbsp;
+	    	</div>
+	    	<div id="news" class="yui3-u-1-2" style="overflow: auto; padding-top: 5em: padding-left: 5px; position: fixed;">
+	    		<h2>News Review</h2>
+	    	</div>
+	    </div>
+    </div>
+    <!-- <div class="container">
+   	<div class="row">
+   		<div class="span4" id="control">
 	   		<h1>Travel Planner</h1>
 	   		<h4>Pick your destination</h4>
 	   		<table>
 	   			<tr>
 	   				<td>Continent</td>
+	   			</tr>
+	   			<tr>
 	   				<td>
 	   					<select id="continents">
-	   						
 	   					</select>
 	   				</td>
 	   			</tr>
 	   			<tr>
 	   				<td>Country</td>
+	   			</tr>
+	   			<tr>
 	   				<td>
 	   					<select id="countries">
-	   						
 	   					</select>
 	   				</td>
 	   			</tr>
 	   			<tr>
 	   				<td>States</td>
+	   			</tr>
+	   			<tr>
 	   				<td>
 	   					<select id="states">
 	   						
@@ -44,6 +91,8 @@
 	   			</tr>
 	   			<tr>
 	   				<td>District</td>
+	   			</tr>
+	   			<tr>
 	   				<td>
 	   					<select id="districts">
 	   						
@@ -52,10 +101,15 @@
 	   			</tr>	
 	   		<table>
 	   	</div>
-	   	<div id="gallery">
-
+	   	<div  class="span8" id="gallery">
+	   		<img src="http://farm9.staticflickr.com/7045/8688420120_7eafa737aa_z.jpg">
+			<img src="http://farm9.staticflickr.com/7055/8688419104_cc7de20574_z.jpg">
+			<img src="http://farm9.staticflickr.com/7055/8687300231_420e7e16fb_z.jpg">
+			<img src="http://farm9.staticflickr.com/7047/8687299245_95e1bd6bc6_z.jpg">
+			<img src="http://farm9.staticflickr.com/8126/8687718456_e8af64df53_z.jpg">
 	   	</div>
    	</div> 	
+   </div> -->
 	<script type="text/javascript">
 		YUI().use('yql', 'node', 'event', 'io-base', 'json-parse', function(Y){
 
@@ -66,6 +120,7 @@
 			var districts = Y.one('#districts');
 			
 			var gallery = Y.one('#gallery');
+			var news = Y.one('#news');
 
 			// prefill continents
 			Y.YQL('select * from geo.continents', function(r){
@@ -117,9 +172,18 @@
 			    function complete(id, o, args){
 			    	photos = Y.JSON.parse(o.responseText);
 			    	gallery.setHTML("<br />")
+
+			    	// attach photos
 			    	Y.Array.each(photos.data,function(element, index){
 			    		gallery.appendChild("<img src=" + element + " />");
 			    	})
+
+			    	// attach news
+			    	Y.Array.each(photos.news,function(element, index){
+			    		// console.log("<p><a href="+ element.url + ">" + element.title + "</a></p>");
+			    		news.appendChild("<p><a href='"+ element.url + "'>" + element.title + "</a></p>");
+			    	})
+
 			    };
 
 			    Y.on('io:complete', complete, Y, ['lorem', 'ipsum']);
